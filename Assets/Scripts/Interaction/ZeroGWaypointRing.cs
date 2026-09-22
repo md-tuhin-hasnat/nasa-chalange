@@ -47,17 +47,21 @@ namespace AresResurgence.Interaction
         public void SetHighlight(bool active)
         {
             if (ringMat == null) return;
+            ringMat.EnableKeyword("_EMISSION");
             if (isPassed)
             {
-                ringMat.color = new Color(0.2f, 1.0f, 0.4f, 0.9f);
+                ringMat.color = new Color(0.2f, 1.0f, 0.4f, 1f);
+                if (ringMat.HasProperty("_EmissionColor")) ringMat.SetColor("_EmissionColor", Color.green * 2.0f);
             }
             else if (active)
             {
-                ringMat.color = new Color(0.1f, 0.85f, 1.0f, 0.95f); // Glowing cyan for current target
+                ringMat.color = new Color(0.1f, 0.85f, 1.0f, 1f);
+                if (ringMat.HasProperty("_EmissionColor")) ringMat.SetColor("_EmissionColor", new Color(0.1f, 0.85f, 1.0f) * 2.5f);
             }
             else
             {
-                ringMat.color = new Color(0.3f, 0.4f, 0.5f, 0.45f); // Dim inactive
+                ringMat.color = new Color(0.3f, 0.4f, 0.5f, 1f);
+                if (ringMat.HasProperty("_EmissionColor")) ringMat.SetColor("_EmissionColor", Color.black);
             }
         }
     }

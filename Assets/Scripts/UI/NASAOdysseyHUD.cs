@@ -140,13 +140,13 @@ namespace AresResurgence.UI
 
         private void DrawZeroGTrainingHUD()
         {
-            // Top Banner: NASA Candidate Training
-            Rect topBar = new Rect(Screen.width * 0.25f, 15, Screen.width * 0.5f, 40);
+            // Top Banner: NASA Candidate Training (Placed safely below HTML top bar)
+            Rect topBar = new Rect(Screen.width * 0.25f, 58, Screen.width * 0.5f, 36);
             GUI.DrawTexture(topBar, hudBgTex);
             GUI.Label(topBar, "★ NASA ASTRONAUT SELECTION: ZERO-G PHYSICS SIMULATION ★", headerStyle);
 
             // Left Panel: Newton's Laws Telemetry
-            Rect leftPanel = new Rect(20, 70, 290, 240);
+            Rect leftPanel = new Rect(24, 108, 290, 230);
             GUI.DrawTexture(leftPanel, hudBgTex);
             GUILayout.BeginArea(new Rect(leftPanel.x + 12, leftPanel.y + 10, leftPanel.width - 24, leftPanel.height - 20));
 
@@ -179,7 +179,7 @@ namespace AresResurgence.UI
             GUILayout.EndArea();
 
             // Right Panel: Navigation Waypoint Progress
-            Rect rightPanel = new Rect(Screen.width - 310, 70, 290, 190);
+            Rect rightPanel = new Rect(Screen.width - 314, 108, 290, 190);
             GUI.DrawTexture(rightPanel, hudBgTex);
             GUILayout.BeginArea(new Rect(rightPanel.x + 12, rightPanel.y + 10, rightPanel.width - 24, rightPanel.height - 20));
 
@@ -204,12 +204,12 @@ namespace AresResurgence.UI
         private void DrawRocketLaunchHUD()
         {
             // Top Launch Header
-            Rect topBar = new Rect(Screen.width * 0.25f, 15, Screen.width * 0.5f, 40);
+            Rect topBar = new Rect(Screen.width * 0.25f, 58, Screen.width * 0.5f, 36);
             GUI.DrawTexture(topBar, hudBgTex);
             GUI.Label(topBar, "🚀 CAPE CANAVERAL SLC-39A: LAUNCH TO ORBIT 🚀", headerStyle);
 
             // Left Launch Telemetry
-            Rect panel = new Rect(25, 75, 300, 210);
+            Rect panel = new Rect(24, 108, 300, 210);
             GUI.DrawTexture(panel, hudBgTex);
             GUILayout.BeginArea(new Rect(panel.x + 14, panel.y + 12, panel.width - 28, panel.height - 24));
 
@@ -231,7 +231,7 @@ namespace AresResurgence.UI
         private void DrawISSDockingHUD()
         {
             // Top Docking Header
-            Rect topBar = new Rect(Screen.width * 0.25f, 15, Screen.width * 0.5f, 40);
+            Rect topBar = new Rect(Screen.width * 0.25f, 58, Screen.width * 0.5f, 36);
             GUI.DrawTexture(topBar, hudBgTex);
             GUI.Label(topBar, "🛰️ MANUAL SPACECRAFT DOCKING APPROACH: ISS PMA-2 🛰️", headerStyle);
 
@@ -241,7 +241,7 @@ namespace AresResurgence.UI
             DrawDockingTargetReticle(cx, cy);
 
             // Left Telemetry Box
-            Rect leftBox = new Rect(25, 75, 320, 250);
+            Rect leftBox = new Rect(24, 108, 320, 250);
             GUI.DrawTexture(leftBox, hudBgTex);
             GUILayout.BeginArea(new Rect(leftBox.x + 14, leftBox.y + 12, leftBox.width - 28, leftBox.height - 24));
 
@@ -273,12 +273,12 @@ namespace AresResurgence.UI
         private void DrawCupolaEarthViewHUD()
         {
             // Top Banner
-            Rect topBar = new Rect(Screen.width * 0.25f, 15, Screen.width * 0.5f, 40);
+            Rect topBar = new Rect(Screen.width * 0.25f, 58, Screen.width * 0.5f, 36);
             GUI.DrawTexture(topBar, hudBgTex);
             GUI.Label(topBar, "🌍 ISS CUPOLA OBSERVATION MODULE: LOW EARTH ORBIT 🌍", headerStyle);
 
-            // Bottom Right Info
-            Rect infoBox = new Rect(Screen.width - 340, Screen.height - 180, 320, 150);
+            // Right Info
+            Rect infoBox = new Rect(Screen.width - 334, 108, 310, 160);
             GUI.DrawTexture(infoBox, hudBgTex);
             GUILayout.BeginArea(new Rect(infoBox.x + 14, infoBox.y + 12, infoBox.width - 28, infoBox.height - 24));
 
@@ -292,7 +292,7 @@ namespace AresResurgence.UI
             GUILayout.EndArea();
 
             // Hint to look around
-            Rect hint = new Rect(Screen.width * 0.35f, Screen.height - 55, Screen.width * 0.3f, 32);
+            Rect hint = new Rect(Screen.width * 0.35f, Screen.height - 68, Screen.width * 0.3f, 30);
             GUI.Box(hint, "Move Mouse to look around the Cupola observation bay", instructionStyle);
         }
 
@@ -301,10 +301,11 @@ namespace AresResurgence.UI
             if (string.IsNullOrEmpty(storyDirector.CurrentCapcomMessage)) return;
 
             float boxWidth = Mathf.Min(780f, Screen.width * 0.85f);
-            float boxHeight = 70f;
-            Rect radioRect = new Rect((Screen.width - boxWidth) * 0.5f, Screen.height - boxHeight - 20f, boxWidth, boxHeight);
+            float boxHeight = 65f;
+            // Placed at Screen.height - 135 to stay safely above the bottom HTML bar (height 45px)
+            Rect radioRect = new Rect((Screen.width - boxWidth) * 0.5f, Screen.height - boxHeight - 65f, boxWidth, boxHeight);
 
-            GUI.Box(radioRect, $"[CAPCOM - HOUSTON MISSION CONTROL]\n\"{storyDirector.CurrentCapcomMessage}\"", dialogStyle);
+            GUI.Box(radioRect, $"[A.T.L.A.S. // TACTICAL AI & CAPCOM]\n\"{storyDirector.CurrentCapcomMessage}\"", dialogStyle);
         }
 
         private void DrawVisorReticle()

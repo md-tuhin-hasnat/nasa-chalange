@@ -1,4 +1,4 @@
-import os, re
+import os
 
 target_html = "Build/WebGL/index.html"
 template_dir = "Assets/WebGLTemplates/HollywoodNASA"
@@ -17,7 +17,7 @@ html_content = """<!DOCTYPE html>
     <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,400;0,600;0,700;1,700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
       :root {
-        --color-bg: #03060a;
+        --color-bg: #020408;
         --color-nasa-blue: #0b3d91;
         --color-cyan-hud: #00f0ff;
         --color-amber-alert: #ffb800;
@@ -50,16 +50,16 @@ html_content = """<!DOCTYPE html>
         pointer-events: none;
         background: linear-gradient(
           rgba(18, 16, 16, 0) 50%, 
-          rgba(0, 0, 0, 0.22) 50%
+          rgba(0, 0, 0, 0.18) 50%
         ), linear-gradient(
           90deg,
-          rgba(0, 150, 255, 0.02),
+          rgba(0, 150, 255, 0.015),
           rgba(0, 255, 170, 0.01),
-          rgba(0, 100, 255, 0.02)
+          rgba(0, 100, 255, 0.015)
         );
         background-size: 100% 3px, 6px 100%;
         z-index: 99;
-        opacity: 0.55;
+        opacity: 0.45;
       }
 
       .vignette {
@@ -69,7 +69,7 @@ html_content = """<!DOCTYPE html>
         width: 100vw;
         height: 100vh;
         pointer-events: none;
-        box-shadow: inset 0 0 120px rgba(0, 5, 15, 0.85);
+        box-shadow: inset 0 0 100px rgba(0, 5, 15, 0.8);
         z-index: 98;
       }
 
@@ -87,13 +87,14 @@ html_content = """<!DOCTYPE html>
       }
 
       #top-hud-bar {
-        background: linear-gradient(180deg, rgba(3, 8, 16, 0.94) 0%, rgba(3, 8, 16, 0.6) 80%, transparent 100%);
-        padding: 12px 24px;
+        height: 48px;
+        background: linear-gradient(180deg, rgba(2, 6, 14, 0.96) 0%, rgba(2, 6, 14, 0.85) 85%, transparent 100%);
+        padding: 0 24px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border-bottom: 1px solid rgba(0, 240, 255, 0.35);
-        box-shadow: 0 4px 20px rgba(0, 240, 255, 0.08);
+        border-bottom: 1px solid rgba(0, 240, 255, 0.3);
+        box-shadow: 0 4px 15px rgba(0, 240, 255, 0.08);
       }
 
       .hud-badge {
@@ -105,42 +106,65 @@ html_content = """<!DOCTYPE html>
 
       .hud-insignia {
         color: var(--color-cyan-hud);
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 700;
         letter-spacing: 2px;
-        text-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
+        text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
       }
 
       .status-pill {
-        background: rgba(0, 240, 255, 0.15);
+        background: rgba(0, 240, 255, 0.12);
         border: 1px solid var(--color-cyan-hud);
         color: var(--color-cyan-hud);
-        font-size: 11px;
-        padding: 2px 8px;
+        font-size: 10px;
+        padding: 2px 7px;
         border-radius: 2px;
         letter-spacing: 1px;
       }
 
-      .status-alert {
-        background: rgba(0, 255, 170, 0.15);
+      /* JARVIS / ATLAS AI Waveform Indicator */
+      .ai-voice-badge {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(0, 255, 170, 0.1);
         border: 1px solid var(--color-terminal-green);
-        color: var(--color-terminal-green);
+        padding: 3px 10px;
+        border-radius: 3px;
         font-size: 11px;
-        padding: 2px 8px;
-        border-radius: 2px;
+        color: var(--color-terminal-green);
         letter-spacing: 1px;
-        animation: pulse-alert 2s infinite ease-in-out;
       }
 
-      @keyframes pulse-alert {
-        0%, 100% { opacity: 0.8; }
-        50% { opacity: 1; box-shadow: 0 0 12px rgba(0, 255, 170, 0.6); }
+      .ai-waveform {
+        display: flex;
+        align-items: flex-end;
+        gap: 2px;
+        height: 14px;
+      }
+
+      .ai-bar {
+        width: 3px;
+        background: var(--color-terminal-green);
+        border-radius: 1px;
+        height: 4px;
+        transition: height 0.1s ease;
+      }
+
+      .speaking .ai-bar:nth-child(1) { animation: wave 0.4s infinite ease-in-out alternate; }
+      .speaking .ai-bar:nth-child(2) { animation: wave 0.3s 0.1s infinite ease-in-out alternate; }
+      .speaking .ai-bar:nth-child(3) { animation: wave 0.5s 0.2s infinite ease-in-out alternate; }
+      .speaking .ai-bar:nth-child(4) { animation: wave 0.35s 0.05s infinite ease-in-out alternate; }
+
+      @keyframes wave {
+        from { height: 3px; }
+        to { height: 13px; }
       }
 
       .telemetry-ticker {
         display: flex;
-        gap: 24px;
-        font-size: 12px;
+        gap: 20px;
+        font-size: 11px;
         letter-spacing: 1px;
       }
 
@@ -168,7 +192,7 @@ html_content = """<!DOCTYPE html>
         width: 100vw;
         height: 100vh;
         z-index: 10;
-        background: #000000;
+        background: #020408;
       }
 
       #unity-canvas {
@@ -178,8 +202,9 @@ html_content = """<!DOCTYPE html>
       }
 
       #bottom-command-bar {
-        background: linear-gradient(0deg, rgba(3, 8, 16, 0.95) 0%, rgba(3, 8, 16, 0.7) 80%, transparent 100%);
-        padding: 12px 24px;
+        height: 44px;
+        background: linear-gradient(0deg, rgba(2, 6, 14, 0.96) 0%, rgba(2, 6, 14, 0.85) 85%, transparent 100%);
+        padding: 0 24px;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -189,7 +214,7 @@ html_content = """<!DOCTYPE html>
 
       .control-hints {
         display: flex;
-        gap: 16px;
+        gap: 14px;
         font-size: 11px;
         color: #8da4bc;
         align-items: center;
@@ -199,23 +224,23 @@ html_content = """<!DOCTYPE html>
         background: rgba(255, 255, 255, 0.08);
         border: 1px solid rgba(0, 240, 255, 0.3);
         color: var(--color-cyan-hud);
-        padding: 1px 6px;
+        padding: 1px 5px;
         border-radius: 3px;
         font-weight: bold;
       }
 
       .action-buttons {
         display: flex;
-        gap: 12px;
+        gap: 10px;
       }
 
       .btn-tactical {
         background: rgba(0, 240, 255, 0.08);
         border: 1px solid rgba(0, 240, 255, 0.4);
         color: var(--color-cyan-hud);
-        padding: 5px 16px;
+        padding: 4px 14px;
         font-family: 'Chakra Petch', sans-serif;
-        font-size: 12px;
+        font-size: 11px;
         letter-spacing: 1px;
         cursor: pointer;
         transition: all 0.2s ease;
@@ -244,47 +269,41 @@ html_content = """<!DOCTYPE html>
       }
 
       .mission-badge-logo {
-        width: 90px;
-        height: 90px;
-        margin-bottom: 24px;
+        width: 80px;
+        height: 80px;
+        margin-bottom: 20px;
         border: 2px solid rgba(0, 240, 255, 0.6);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 38px;
+        font-size: 34px;
         box-shadow: 0 0 35px rgba(0, 240, 255, 0.4);
-        animation: spin-slow 25s infinite linear;
-      }
-
-      @keyframes spin-slow {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
       }
 
       .loading-title {
         font-family: 'Chakra Petch', sans-serif;
-        font-size: 26px;
+        font-size: 24px;
         letter-spacing: 4px;
         color: #ffffff;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
         text-shadow: 0 0 15px rgba(0, 240, 255, 0.6);
       }
 
       .loading-subtitle {
-        font-size: 13px;
+        font-size: 12px;
         color: var(--color-cyan-hud);
         letter-spacing: 2px;
-        margin-bottom: 30px;
+        margin-bottom: 26px;
       }
 
       .loading-progress-container {
-        width: 420px;
+        width: 400px;
         height: 6px;
         background: rgba(255, 255, 255, 0.1);
         border-radius: 3px;
         overflow: hidden;
-        margin-bottom: 14px;
+        margin-bottom: 12px;
         border: 1px solid rgba(0, 240, 255, 0.3);
       }
 
@@ -307,12 +326,12 @@ html_content = """<!DOCTYPE html>
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 620px;
+        width: 600px;
         max-width: 90vw;
         background: rgba(4, 10, 20, 0.96);
         border: 1px solid var(--color-cyan-hud);
         box-shadow: 0 0 45px rgba(0, 240, 255, 0.3), 0 0 80px rgba(0, 0, 0, 0.95);
-        padding: 28px 32px;
+        padding: 26px 30px;
         z-index: 120;
         backdrop-filter: blur(10px);
         display: none;
@@ -320,12 +339,12 @@ html_content = """<!DOCTYPE html>
 
       .modal-header {
         font-family: 'Chakra Petch', sans-serif;
-        font-size: 18px;
+        font-size: 17px;
         letter-spacing: 2px;
         color: var(--color-cyan-hud);
         border-bottom: 1px solid rgba(0, 240, 255, 0.3);
-        padding-bottom: 12px;
-        margin-bottom: 16px;
+        padding-bottom: 10px;
+        margin-bottom: 14px;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -333,9 +352,9 @@ html_content = """<!DOCTYPE html>
 
       .modal-body {
         font-size: 13px;
-        line-height: 1.7;
+        line-height: 1.6;
         color: #c4d7e8;
-        margin-bottom: 24px;
+        margin-bottom: 20px;
       }
 
       .modal-body strong {
@@ -345,7 +364,7 @@ html_content = """<!DOCTYPE html>
       .modal-actions {
         display: flex;
         justify-content: flex-end;
-        gap: 12px;
+        gap: 10px;
       }
     </style>
   </head>
@@ -362,12 +381,20 @@ html_content = """<!DOCTYPE html>
     </audio>
 
     <div id="tactical-console">
-      <!-- TOP HUD TELEMETRY BAR -->
+      <!-- TOP HUD TELEMETRY BAR (Height 48px, cleanly separated from game HUD) -->
       <div id="top-hud-bar">
         <div class="hud-badge">
           <span class="hud-insignia">NASA // EXPEDITION ODYSSEY</span>
           <span class="status-pill">JUNIOR ASTRONAUT</span>
-          <span class="status-alert">SIMULATION ACTIVE</span>
+          <div class="ai-voice-badge" id="ai-voice-badge">
+            <div class="ai-waveform" id="ai-waveform">
+              <div class="ai-bar"></div>
+              <div class="ai-bar"></div>
+              <div class="ai-bar"></div>
+              <div class="ai-bar"></div>
+            </div>
+            <span id="ai-voice-status">A.T.L.A.S. TACTICAL AI ONLINE</span>
+          </div>
         </div>
         <div class="telemetry-ticker">
           <div class="telemetry-item">
@@ -392,40 +419,41 @@ html_content = """<!DOCTYPE html>
           <span><span class="key-cap">A</span><span class="key-cap">D</span> STRAFE</span>
           <span><span class="key-cap">SPACE</span><span class="key-cap">SHIFT</span> UP/DN</span>
           <span><span class="key-cap">Q</span><span class="key-cap">E</span> ROLL</span>
-          <span><span class="key-cap">X</span> COUNTER-BRAKE</span>
+          <span><span class="key-cap">X</span> BRAKE</span>
           <span><span class="key-cap">MOUSE</span> PITCH/YAW</span>
         </div>
         <div class="action-buttons">
+          <button class="btn-tactical" id="btn-jarvis-test">TALK TO A.T.L.A.S. (JARVIS)</button>
           <button class="btn-tactical" id="btn-audio-toggle">AUDIO: ON</button>
-          <button class="btn-tactical" id="btn-briefing">MISSION BRIEFING</button>
+          <button class="btn-tactical" id="btn-briefing">BRIEFING</button>
           <button class="btn-tactical" id="btn-fullscreen">FULLSCREEN</button>
         </div>
       </div>
     </div>
 
-    <!-- BRIEIFNG MODAL -->
+    <!-- BRIEFING MODAL -->
     <div id="briefing-modal">
       <div class="modal-header">
         <span>★ NASA FLIGHT DIRECTOR BRIEFING ★</span>
         <button id="btn-close-briefing" style="background:none; border:none; color:var(--color-cyan-hud); cursor:pointer; font-size:18px;">&times;</button>
       </div>
       <div class="modal-body">
-        <p><strong>RECRUITMENT & INDUCTION:</strong> Welcome to the NASA Astronaut Candidate Program, Junior Astronaut. Before you venture beyond Earth's gravity well, you must master microgravity physics.</p>
+        <p><strong>RECRUITMENT & INDUCTION:</strong> Welcome to NASA, Junior Astronaut. You are paired with <em>A.T.L.A.S.</em>, your tactical flight AI.</p>
         <br>
-        <p><strong>PHASE 1 - ZERO-G PHYSICS:</strong> Navigate through 4 scientific calibration rings in the simulation chamber. Learn Newton's 1st Law (inertia without friction) and 3rd Law (every thruster action has an equal and opposite reaction).</p>
+        <p><strong>PHASE 1 - ZERO-G TRAINING:</strong> Navigate 4 navigation rings. Master Newton's 1st Law (drift without friction) and 3rd Law (every thruster burst has an equal and opposite reaction).</p>
         <br>
-        <p><strong>PHASE 2 - ROCKET LAUNCH:</strong> Say farewell and ascend through the atmosphere aboard the Saturn V rocket into low Earth orbit.</p>
+        <p><strong>PHASE 2 - ROCKET LAUNCH:</strong> Ascend aboard the Saturn V rocket into low Earth orbit.</p>
         <br>
-        <p><strong>PHASE 3 - MANUAL ISS DOCKING:</strong> Take control of the crew capsule. Use 6-DOF RCS thrusters to align with the ISS PMA-2 docking port with closure speed &lt; 0.35 m/s.</p>
+        <p><strong>PHASE 3 - MANUAL ISS DOCKING:</strong> Manually guide the spacecraft to PMA-2 with closure velocity under 0.35 m/s.</p>
         <br>
-        <p><strong>PHASE 4 - CUPOLA EARTH VIEW:</strong> Float inside the ISS Cupola observation deck and gaze upon the majesty of planet Earth to a stirring cosmic symphony.</p>
+        <p><strong>PHASE 4 - CUPOLA VIEW:</strong> Gaze at the curvature of Earth through the 7 panoramic observation windows to an awe-inspiring space symphony.</p>
       </div>
       <div class="modal-actions">
         <button class="btn-tactical" id="btn-dismiss-briefing">ACKNOWLEDGE & RESUME</button>
       </div>
     </div>
 
-    <!-- HOLLYWOOD CINEMATIC LOADING SCREEN -->
+    <!-- LOADING SCREEN -->
     <div id="loading-overlay">
       <div class="mission-badge-logo">🚀</div>
       <div class="loading-title">NASA ODYSSEY</div>
@@ -447,16 +475,94 @@ html_content = """<!DOCTYPE html>
       var statusText = document.querySelector("#loading-status");
       var briefingModal = document.querySelector("#briefing-modal");
       var audioToggleBtn = document.querySelector("#btn-audio-toggle");
+      var aiBadge = document.querySelector("#ai-voice-badge");
+      var aiStatus = document.querySelector("#ai-voice-status");
 
       var audioSymphony = document.querySelector("#audio-cupola-symphony");
       var audioLaunch = document.querySelector("#audio-launch-comms");
       var audioEnabled = true;
 
+      // ==========================================
+      // A.T.L.A.S. / J.A.R.V.I.S. AI VOICE ENGINE
+      // ==========================================
+      var audioCtx = null;
+      function playRadioChirp() {
+        try {
+          if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          if (audioCtx.state === 'suspended') audioCtx.resume();
+          
+          var osc = audioCtx.createOscillator();
+          var gain = audioCtx.createGain();
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(2525, audioCtx.currentTime); // NASA Quindar frequency
+          osc.frequency.exponentialRampToValueAtTime(1800, audioCtx.currentTime + 0.08);
+          gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.1);
+        } catch(e) {}
+      }
+
+      window.speakJarvis = function(text) {
+        if (!window.speechSynthesis || !audioEnabled) return;
+        window.speechSynthesis.cancel(); // cancel previous if any
+
+        playRadioChirp();
+
+        // Strip prefixes if present for natural speech
+        var cleanText = text.replace(/^[A-Za-z0-9\\s\\-\\.\\[\\]\\:]*\\:\\s*/i, "").replace(/["']/g, "");
+
+        var utterance = new SpeechSynthesisUtterance(cleanText);
+        utterance.rate = 1.05;
+        utterance.pitch = 0.95;
+
+        // Choose British English or deep suave male voice like JARVIS
+        var voices = window.speechSynthesis.getVoices();
+        var preferredVoice = voices.find(function(v) {
+          return (v.lang.includes("en-GB") || v.lang.includes("en_GB")) && v.name.toLowerCase().includes("male");
+        }) || voices.find(function(v) {
+          return v.lang.includes("en-GB") || v.lang.includes("en_GB");
+        }) || voices.find(function(v) {
+          return v.lang.includes("en");
+        });
+
+        if (preferredVoice) utterance.voice = preferredVoice;
+
+        utterance.onstart = function() {
+          aiBadge.classList.add("speaking");
+          aiStatus.textContent = "A.T.L.A.S. TRANSMITTING...";
+        };
+
+        utterance.onend = function() {
+          aiBadge.classList.remove("speaking");
+          aiStatus.textContent = "A.T.L.A.S. TACTICAL AI ONLINE";
+        };
+
+        utterance.onerror = function() {
+          aiBadge.classList.remove("speaking");
+          aiStatus.textContent = "A.T.L.A.S. TACTICAL AI ONLINE";
+        };
+
+        setTimeout(function() {
+          window.speechSynthesis.speak(utterance);
+        }, 120);
+      };
+
+      if (window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = function() { window.speechSynthesis.getVoices(); };
+      }
+
+      document.querySelector("#btn-jarvis-test").addEventListener("click", function() {
+        window.speakJarvis("A.T.L.A.S. Tactical AI online and functioning nominally, sir. All thrusters and microgravity sensors calibrated.");
+      });
+
       function startAudio() {
         if (!audioEnabled) return;
         if (audioSymphony && audioSymphony.paused) {
           audioSymphony.volume = 0.65;
-          audioSymphony.play().catch(function(e) { console.log("Audio play postponed:", e); });
+          audioSymphony.play().catch(function(e) {});
         }
       }
 
@@ -474,6 +580,7 @@ html_content = """<!DOCTYPE html>
           audioToggleBtn.style.color = "var(--color-amber-alert)";
           if (audioSymphony) audioSymphony.pause();
           if (audioLaunch) audioLaunch.pause();
+          if (window.speechSynthesis) window.speechSynthesis.cancel();
         }
       });
 
@@ -527,6 +634,10 @@ html_content = """<!DOCTYPE html>
             loadingOverlay.style.opacity = "0";
             setTimeout(function() {
               loadingOverlay.style.display = "none";
+              // Trigger JARVIS welcome line on launch
+              setTimeout(function() {
+                window.speakJarvis("Welcome, Junior Astronaut. I am A.T.L.A.S., your tactical flight AI. Initializing zero-gravity physics simulation. Press W to engage thrusters.");
+              }, 500);
             }, 800);
           }, 600);
         }).catch(function(message) {
@@ -545,4 +656,4 @@ with open(target_html, "w") as f:
 with open(os.path.join(template_dir, "index.html"), "w") as f:
     f.write(html_content)
 
-print(f"Applied tactical shell to {target_html} and {template_dir}/index.html")
+print(f"Applied tactical shell with JARVIS AI voice to {target_html} and {template_dir}/index.html")

@@ -70,29 +70,21 @@ namespace AresResurgence.Environment
         {
             if (baseLitMaterial == null)
             {
-                var urpAsset = UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline as UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset;
-                if (urpAsset != null && urpAsset.defaultMaterial != null)
+                Shader s = Shader.Find("Standard") 
+                           ?? Shader.Find("Mobile/Diffuse") 
+                           ?? Shader.Find("Diffuse") 
+                           ?? Shader.Find("Unlit/Color");
+                if (s != null)
                 {
-                    baseLitMaterial = new Material(urpAsset.defaultMaterial);
+                    baseLitMaterial = new Material(s);
                 }
                 else
                 {
-                    Shader s = Shader.Find("Universal Render Pipeline/Lit") 
-                               ?? Shader.Find("Universal Render Pipeline/Simple Lit") 
-                               ?? Shader.Find("Universal Render Pipeline/Unlit")
-                               ?? Shader.Find("Unlit/Color");
-                    if (s != null)
-                    {
-                        baseLitMaterial = new Material(s);
-                    }
-                    else
-                    {
-                        GameObject dummy = GameObject.CreatePrimitive(PrimitiveType.Quad);
-                        Renderer r = dummy.GetComponent<Renderer>();
-                        if (r != null && r.sharedMaterial != null)
-                            baseLitMaterial = new Material(r.sharedMaterial);
-                        Destroy(dummy);
-                    }
+                    GameObject dummy = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                    Renderer r = dummy.GetComponent<Renderer>();
+                    if (r != null && r.sharedMaterial != null)
+                        baseLitMaterial = new Material(r.sharedMaterial);
+                    Destroy(dummy);
                 }
             }
             return baseLitMaterial;
@@ -102,14 +94,16 @@ namespace AresResurgence.Environment
         {
             Material mat = new Material(GetBaseMaterial());
             mat.color = albedo;
+            if (mat.HasProperty("_Color")) mat.SetColor("_Color", albedo);
             if (mat.HasProperty("_BaseColor")) mat.SetColor("_BaseColor", albedo);
             if (mat.HasProperty("_Metallic")) mat.SetFloat("_Metallic", metallic);
+            if (mat.HasProperty("_Glossiness")) mat.SetFloat("_Glossiness", smoothness);
             if (mat.HasProperty("_Smoothness")) mat.SetFloat("_Smoothness", smoothness);
 
             if (emissive)
             {
                 mat.EnableKeyword("_EMISSION");
-                Color emCol = emissionColor ?? albedo;
+                Color emCol = emissionColor ?? (albedo * 2.2f);
                 if (mat.HasProperty("_EmissionColor")) mat.SetColor("_EmissionColor", emCol);
             }
             return mat;
@@ -119,7 +113,7 @@ namespace AresResurgence.Environment
         {
             RenderSettings.skybox = null;
             RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
-            RenderSettings.ambientLight = new Color(0.04f, 0.08f, 0.14f);
+            RenderSettings.ambientLight = new Color(0.12f, 0.15f, 0.22f);
 
             // Primary Sunlight (High-contrast harsh vacuum sun)
             GameObject sunObj = new GameObject("Cosmic_Sun_KeyLight");
@@ -188,6 +182,25 @@ namespace AresResurgence.Environment
 
             // Observation Command Bridge (Where JSC Mission Control is docked)
             GameObject bridge = CreateBox("Command_Bridge", rig.transform, new Vector3(0f, 8f, -16f), new Vector3(14f, 3f, 8f), wallMat);
+
+            // Interior High-Tech Chamber Illumination
+            GameObject clObj1 = new GameObject("Chamber_PointLight_1");
+            clObj1.transform.parent = rig.transform;
+            clObj1.transform.position = new Vector3(0f, 8f, 5f);
+            Light cl1 = clObj1.AddComponent<Light>();
+            cl1.type = LightType.Point;
+            cl1.range = 40f;
+            cl1.intensity = 2.4f;
+            cl1.color = new Color(0.85f, 0.95f, 1.0f);
+
+            GameObject clObj2 = new GameObject("Chamber_PointLight_2");
+            clObj2.transform.parent = rig.transform;
+            clObj2.transform.position = new Vector3(0f, 8f, -10f);
+            Light cl2 = clObj2.AddComponent<Light>();
+            cl2.type = LightType.Point;
+            cl2.range = 40f;
+            cl2.intensity = 2.4f;
+            cl2.color = new Color(0.85f, 0.95f, 1.0f);
 
             // 4 Navigation Waypoint Rings for Zero-G Training Course
             Vector3[] ringPositions = new Vector3[]

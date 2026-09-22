@@ -326,6 +326,13 @@ namespace AresResurgence.Story
         public void SetCapcomMessage(string msg)
         {
             CurrentCapcomMessage = msg;
+#if UNITY_WEBGL && !UNITY_EDITOR
+            try
+            {
+                Application.ExternalCall("speakJarvis", msg);
+            }
+            catch {}
+#endif
         }
     }
 }
