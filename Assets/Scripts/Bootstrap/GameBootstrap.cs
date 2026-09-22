@@ -13,11 +13,11 @@ namespace AresResurgence.Bootstrap
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void InitializeGameOnPlay()
         {
-            if (Object.FindAnyObjectByType<ProceduralMartianWorld>() == null)
+            if (Object.FindAnyObjectByType<NASAMasterExperience>() == null)
             {
-                Debug.Log("[Ares Resurgence] Initializing Mission 0: The Jezero Anomaly...");
-                GameObject worldBootstrap = new GameObject("Ares_MissionZero_WorldBootstrap");
-                worldBootstrap.AddComponent<ProceduralMartianWorld>();
+                Debug.Log("[NASA Odyssey] Initializing Hollywood Junior Astronaut Odyssey: From Zero-G to the ISS...");
+                GameObject worldBootstrap = new GameObject("NASA_Odyssey_MasterBootstrap");
+                worldBootstrap.AddComponent<NASAMasterExperience>();
             }
         }
     }
